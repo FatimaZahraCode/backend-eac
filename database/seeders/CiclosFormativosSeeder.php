@@ -6,14 +6,14 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class FamiliasProfesionalesSeeder extends Seeder
+class CiclosFormativosSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $path = database_path('seeders/csv/familias_profesionales.csv');
+         $path = database_path('seeders/csv/ciclos.csv');
 
         if (!file_exists($path)) {
             $this->command->error("CSV no encontrado: $path");
@@ -25,7 +25,7 @@ class FamiliasProfesionalesSeeder extends Seeder
 
         // El primer registro es la cabecera
         $header = array_map('trim', array_shift($rows));
-
+        $familia_profesional_id = DB::table('familias_profesionales')->pluck('id','codigo');
         $data = [];
         foreach ($rows as $row) {
             // Ignorar filas vacías o mal formadas
@@ -36,8 +36,10 @@ class FamiliasProfesionalesSeeder extends Seeder
             $rec = array_combine($header, $row);
 
             $data[] = [
+                'familia_profesional_id' => $familia_profesional_id[trim($rec['familia'] ?? '')] ?? null,
                 'nombre' => trim($rec['nombre'] ?? ''),
-                'codigo' => trim($rec['codigo'] ?? ''),
+                'codigo' => trim($rec['cod_ciclo'] ?? ''),
+                'grado' => trim($rec['nivel'] ?? ''),
                 'descripcion' => $rec['descripcion'] ?? null,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -47,10 +49,10 @@ class FamiliasProfesionalesSeeder extends Seeder
         // Insertar/actualizar usando upsert para evitar duplicados por 'codigo'
         DB::transaction(function () use ($data) {
             foreach (array_chunk($data, 200) as $chunk) {
-                DB::table('familias_profesionales')->upsert(
+                DB::table('ciclos_formativos')->upsert(
                     $chunk,
                     ['codigo'], // llave única para evitar duplicados
-                    ['nombre', 'descripcion', 'updated_at']
+                    ['familia_profesional_id','nombre', 'grado','descripcion', 'updated_at']
                 );
             }
         });
