@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\FamiliaProfesional;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,7 @@ class CiclosFormativosSeeder extends Seeder
 
         // El primer registro es la cabecera
         $header = array_map('trim', array_shift($rows));
-        $familia_profesional_id = DB::table('familias_profesionales')->pluck('id','codigo');
+        $familia_profesional_id = FamiliaProfesional::pluck('id', 'codigo');
         $data = [];
         foreach ($rows as $row) {
             // Ignorar filas vacías o mal formadas
@@ -34,9 +35,14 @@ class CiclosFormativosSeeder extends Seeder
             }
 
             $rec = array_combine($header, $row);
+            $codigoFamilia = trim($rec['familia'] ?? '');
+
+                if (!isset($familia_profesional_id[$codigoFamilia])) {
+                    continue; // o log si quieres detectar errores
+                }
 
             $data[] = [
-                'familia_profesional_id' => $familia_profesional_id[trim($rec['familia'] ?? '')] ?? null,
+                'familia_profesional_id' => $familia_profesional_id[$codigoFamilia],
                 'nombre' => trim($rec['nombre'] ?? ''),
                 'codigo' => trim($rec['cod_ciclo'] ?? ''),
                 'grado' => trim($rec['nivel'] ?? ''),
