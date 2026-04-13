@@ -26,13 +26,8 @@ class DatabaseSeeder extends Seeder
             CiclosFormativosSeeder::class,
             ModulosSeeder::class,
             ResultadosAprendizajeSeeder::class,
-        ]);
-       /*  $this->call([
-            FamiliasProfesionalesSeeder::class,
-            CiclosFormativosSeeder::class,
-            ModulosFormativosSeeder::class,
-            ResultadosAprendizajeSeeder::class,
             CriteriosEvaluacionSeeder::class,
-        ]); */
+        ]);
+
     }
 }

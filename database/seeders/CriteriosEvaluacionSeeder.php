@@ -3,18 +3,20 @@
 namespace Database\Seeders;
 
 use App\Models\Modulo;
+use App\Models\ResultadoAprendizaje;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ResultadosAprendizajeSeeder extends Seeder
+class CriteriosEvaluacionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $path = database_path('seeders/csv/resultados_aprendizaje.csv');
+        // dd('ENTRANDO EN CRITERIOS');
+        $path = database_path('seeders/csv/criterios_evaluacion.csv');
 
         if (!file_exists($path)) {
             $this->command->error("CSV no encontrado: $path");
@@ -26,23 +28,31 @@ class ResultadosAprendizajeSeeder extends Seeder
 
         // El primer registro es la cabecera
         $header = array_map('trim', array_shift($rows));
-        $modulo_id = Modulo::pluck('id', 'codigo');
+
         $data = [];
         foreach ($rows as $row) {
             // Ignorar filas vacías o mal formadas
             if (count($row) < count($header)) {
                 continue;
             }
-
             $rec = array_combine($header, $row);
-            $cod_modulo_id = trim($rec['cod_modulo'] ?? '');
-            if (!isset($modulo_id[$cod_modulo_id])) {
-                $this->command->error("Módulo no encontrado para código: $cod_modulo_id");
+            $modulo_id = Modulo::where('codigo', trim($rec['cod_modulo']))->first()->id ?? null;
+            if (!$modulo_id) {
+                //echo "Módulo no encontrado para código: ".trim($rec['cod_modulo']).". Asegúrate de que el módulo exista antes de cargar los criterios de evaluación.";
                 continue;
             }
+
+            $id_ra = 'RA'.trim($rec['id_ra'] ?? '');
+            $resultado_aprendizaje_id = ResultadoAprendizaje::where(['codigo'=>$id_ra,'modulo_id'=>$modulo_id])->first();
+            if (!$resultado_aprendizaje_id) {
+                //dd($id_ra);
+                //echo "Resultado de aprendizaje no encontrado para código: $id_ra. Asegúrate de que el resultado de aprendizaje exista antes de cargar los criterios de evaluación.";
+                continue;
+            }
+
             $data[] = [
-                'modulo_id' => $modulo_id[$cod_modulo_id],
-                'codigo' => 'RA'.trim($rec['id_ra'] ?? ''),
+                'resultado_aprendizaje_id' => $resultado_aprendizaje_id->id,
+                'codigo' => trim($rec['id_criterio'] ?? ''),
                 'descripcion' => $rec['definicion'] ?? null,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -52,9 +62,9 @@ class ResultadosAprendizajeSeeder extends Seeder
         // Insertar/actualizar usando upsert para evitar duplicados por 'codigo'
         DB::transaction(function () use ($data) {
             foreach (array_chunk($data, 200) as $chunk) {
-                DB::table('resultados_aprendizaje')->upsert(
+                DB::table('criterios_evaluacion')->upsert(
                     $chunk,
-                    ['codigo','modulo_id'], // llave única para evitar duplicados
+                    ['resultado_aprendizaje_id', 'codigo'], // llave única para evitar duplicados
                     ['descripcion', 'updated_at']
                 );
             }
