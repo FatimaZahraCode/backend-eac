@@ -48,38 +48,60 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function roles(): BelongsToMany
-{
-    return $this->belongsToMany(Role::class, 'user_roles')
-                ->withPivot('ecosistema_laboral_id')
-                ->withTimestamps();
-}
+    public function userRoles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_roles')
+            ->withPivot('ecosistema_laboral_id')
+            ->withTimestamps();
+    }
+    // Ecosistemas en los que está matriculado (como estudiante)
+    public function matriculas(): HasMany
+    {
+        return $this->hasMany(Matricula::class, 'estudiante_id');
+    }
 
-// Ecosistemas en los que está matriculado (como estudiante)
-public function matriculas(): HasMany
-{
-    return $this->hasMany(Matricula::class, 'estudiante_id');
-}
+    public function ecosistemasMatriculado(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            EcosistemaLaboral::class,
+            'matriculas',
+            'estudiante_id'
+        )->withTimestamps();
+    }
 
-public function ecosistemasMatriculado(): BelongsToMany
-{
-    return $this->belongsToMany(
-        EcosistemaLaboral::class,
-        'matriculas',
-        'estudiante_id'
-    )->withTimestamps();
-}
+    // Perfiles de habilitación del estudiante
+    public function perfilesHabilitacion(): HasMany
+    {
+        return $this->hasMany(PerfilHabilitacion::class, 'estudiante_id');
+    }
 
-// Perfiles de habilitación del estudiante
-public function perfilesHabilitacion(): HasMany
-{
-    return $this->hasMany(PerfilHabilitacion::class, 'estudiante_id');
-}
-
-public function perfilEn(EcosistemaLaboral $ecosistema): ?PerfilHabilitacion
-{
-    return $this->perfilesHabilitacion()
-                ->where('ecosistema_laboral_id', $ecosistema->id)
-                ->first();
-}
+    public function perfilEn(EcosistemaLaboral $ecosistema): ?PerfilHabilitacion
+    {
+        return $this->perfilesHabilitacion()
+            ->where('ecosistema_laboral_id', $ecosistema->id)
+            ->first();
+    }
+    // Método helper que consulta la relación roles y devuelve true/false
+    public function hasRole(string $role): bool
+    {
+        // Se usa la relación 'roles' definida en el modelo User
+        $hasRole = $this->userRoles()->where('name', $role)->exists();
+        if ($role == 'estudiante') {
+            return $hasRole && $this->matriculas()->exists();
+        }
+        if ($role == 'docente') {
+            return $hasRole && $this->perfilesHabilitacion()->exists();
+        }
+        return $hasRole;
+    }
+    //Si necesitas comprobar múltiples roles, extiende hasRole() o añade hasAnyRole(array $roles) para mayor flexibilidad.
+    public function hasAnyRole(array $roles): bool
+    {
+        foreach ($roles as $role) {
+            if ($this->hasRole($role)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

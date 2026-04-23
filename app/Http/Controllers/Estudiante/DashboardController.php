@@ -11,8 +11,9 @@ class DashboardController extends Controller
     /**
      * Handle the incoming request.
      */
-     public function __invoke(): View
+    public function __invoke(): View
     {
+
         $perfiles = auth()->user()
             ->perfilesHabilitacion()
             ->with([
@@ -21,6 +22,7 @@ class DashboardController extends Controller
                 'situacionesConquistadas',
             ])
             ->get();
+
 
         return view('estudiante.dashboard', compact('perfiles'));
     }

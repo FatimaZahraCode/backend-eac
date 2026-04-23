@@ -2,11 +2,6 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Publico\PortadaController;
-use App\Http\Controllers\Publico\ModuloController;
-use App\Http\Controllers\Publico\EcosistemaController;
-use App\Http\Controllers\Estudiante\DashboardController;
-use App\Http\Controllers\Estudiante\PerfilController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,6 +25,7 @@ Route::middleware(['auth', 'role:estudiante'])
     ->group(function () {
         Route::get('/dashboard',          App\Http\Controllers\Estudiante\DashboardController::class)->name('dashboard');
         Route::get('/perfil/{perfil}',    App\Http\Controllers\Estudiante\PerfilController::class)->name('perfil.show');
+        Route::get('/modulos',         App\Http\Controllers\Estudiante\ModuloController::class)->name('modulos.index');
     });
 
 // ─── Rutas del docente ────────────────────────────────────────────────────────
