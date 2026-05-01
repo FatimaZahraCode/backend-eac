@@ -51,7 +51,7 @@ class User extends Authenticatable
     }
     public function userRoles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'user_roles')
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')
             ->withPivot('ecosistema_laboral_id')
             ->withTimestamps();
     }
@@ -86,14 +86,7 @@ class User extends Authenticatable
     public function hasRole(string $role): bool
     {
         // Se usa la relación 'roles' definida en el modelo User
-        $hasRole = $this->userRoles()->where('name', $role)->exists();
-        if ($role == 'estudiante') {
-            return $hasRole && $this->matriculas()->exists();
-        }
-        if ($role == 'docente') {
-            return $hasRole && $this->perfilesHabilitacion()->exists();
-        }
-        return $hasRole;
+         return $this->userRoles()->where('name', $role)->exists();
     }
     //Si necesitas comprobar múltiples roles, extiende hasRole() o añade hasAnyRole(array $roles) para mayor flexibilidad.
     public function hasAnyRole(array $roles): bool

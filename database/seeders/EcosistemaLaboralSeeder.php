@@ -14,7 +14,6 @@ use App\Models\ResultadoAprendizaje;
 use App\Models\Role;
 use App\Models\SituacionCompetencia;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -119,7 +118,7 @@ class EcosistemaLaboralSeeder extends Seeder
 
         // 4. Trazabilidad curricular: qué CE cubre cada SC
         DB::table('sc_criterios_evaluacion')->truncate(); // Limpiar trazabilidades anteriores para evitar duplicados
-        
+
         $sc01->criteriosEvaluacion()->attach([
             $ce1a->id => ['peso_en_sc' => 30],
             $ce1b->id => ['peso_en_sc' => 40],

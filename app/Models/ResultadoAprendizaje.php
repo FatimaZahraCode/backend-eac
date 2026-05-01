@@ -15,7 +15,7 @@ class ResultadoAprendizaje extends Model
 
     public function modulo(): BelongsTo
     {
-        return $this->belongsTo(Modulo::class);
+        return $this->belongsTo(Modulo::class, 'modulo_id');
     }
 
     public function criteriosEvaluacion(): HasMany

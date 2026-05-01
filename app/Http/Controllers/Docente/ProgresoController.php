@@ -16,8 +16,8 @@ class ProgresoController extends Controller
     {
         $esDocente = auth()->user()
             ->userRoles()
-            ->where('ecosistema_laboral_id', $ecosistema->id)
-            ->whereHas('role', fn($q) => $q->where('name', 'docente'))
+            ->where('name', 'docente')
+            ->wherePivot('ecosistema_laboral_id', $ecosistema->id)
             ->exists();
 
         abort_unless($esDocente, 403);
