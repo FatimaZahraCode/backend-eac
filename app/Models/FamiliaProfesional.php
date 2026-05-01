@@ -12,6 +12,6 @@ class FamiliaProfesional extends Model
 
     public function ciclosFormativos(): HasMany
     {
-        return $this->hasMany(CicloFormativo::class);
+        return $this->hasMany(CicloFormativo::class, 'familia_profesional_id');
     }
 }

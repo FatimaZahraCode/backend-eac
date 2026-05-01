@@ -23,8 +23,8 @@ class SituacionCompetencia extends Model
     {
         return $this->belongsTo(EcosistemaLaboral::class);
     }
-    //Relacion con nodoRequisito
-    public function nodoRequisito():HasMany
+    //Relacion con nodosRequisito
+    public function nodosRequisito():HasMany
     {
         return $this->hasMany(NodoRequisito::class);
     }

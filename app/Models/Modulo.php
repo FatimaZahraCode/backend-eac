@@ -11,6 +11,7 @@ class Modulo extends Model
     protected $fillable = [
         'ciclo_formativo_id', 'nombre', 'codigo', 'horas_totales', 'descripcion',
     ];
+    protected $table = 'modulos';
 
     public function cicloFormativo(): BelongsTo
     {
