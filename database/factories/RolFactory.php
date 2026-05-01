@@ -2,14 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\EcosistemaLaboral;
-use App\Models\Modulo;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<EcosistemaLaboral>
+ * @extends Factory<Model>
  */
-class EcosistemaLaboralFactory extends Factory
+class RolFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,11 +18,8 @@ class EcosistemaLaboralFactory extends Factory
     public function definition(): array
     {
         return [
-            'modulo_id' => Modulo::factory(),
-            'nombre' => $this->faker->word(),
-            'codigo' => $this->faker->unique()->regexify('[0-9]{4}[A-Z]{3}'),
+            'nombre' => $this->faker->randomElements(['Administrador', 'Docente', 'Estudiante']),
             'descripcion' => $this->faker->sentence(),
-            'activo' => $this->faker->boolean(),
             'created_at' => now(),
             'updated_at' => now(),
         ];
