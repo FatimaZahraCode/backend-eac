@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\EcosistemaLaboral;
 use App\Models\NodoRequisito;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SituacionCompetencia extends Model
 {
-
+    use HasFactory;
     protected $table = 'situaciones_competencia';
     protected $fillable = ['ecosistema_laboral_id', 'codigo', 'titulo', 'descripcion', 'umbral_maestria', 'nivel_complejidad', 'activa'];
     protected $casts = [

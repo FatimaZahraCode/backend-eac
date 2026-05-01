@@ -2,14 +2,14 @@
 
 namespace Database\Factories;
 
-use App\Models\EcosistemaLaboral;
-use App\Models\Modulo;
+use App\Models\NodoRequisito;
+use App\Models\SituacionCompetencia;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<EcosistemaLaboral>
+ * @extends Factory<NodoRequisito>
  */
-class EcosistemaLaboralFactory extends Factory
+class NodoRequisitoFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,11 +19,10 @@ class EcosistemaLaboralFactory extends Factory
     public function definition(): array
     {
         return [
-            'modulo_id' => Modulo::factory(),
-            'nombre' => $this->faker->word(),
-            'codigo' => $this->faker->unique()->regexify('[0-9]{4}[A-Z]{3}'),
+            'situacion_competencia_id' => SituacionCompetencia::factory(),
+            'tipo' => $this->faker->randomElement(['conocimiento', 'habilidad']),
             'descripcion' => $this->faker->sentence(),
-            'activo' => $this->faker->boolean(),
+            'orden' => $this->faker->numberBetween(1, 10),
             'created_at' => now(),
             'updated_at' => now(),
         ];
