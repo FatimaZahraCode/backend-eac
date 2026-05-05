@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use App\Services\GrafoService;
+use App\Services\RecomendacionService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(GrafoService::class);
+
+        $this->app->singleton(RecomendacionService::class, function ($app) {
+            return new RecomendacionService($app->make(GrafoService::class));
+        });
     }
 
     /**
@@ -27,6 +33,5 @@ class AppServiceProvider extends ServiceProvider
             // auth()->user()->hasRole($role) reutiliza el helper definido en User
             return auth()->check() && auth()->user()->hasRole($role);
         });
-
     }
 }
