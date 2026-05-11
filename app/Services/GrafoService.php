@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 
@@ -146,7 +147,7 @@ class GrafoService
             if ($actual === $scId) {
                 throw new \RuntimeException(
                     "La arista crea un ciclo: la SC #{$scId} ya es alcanzable "
-                    . "desde la SC #{$scRequisitoId}."
+                        . "desde la SC #{$scRequisitoId}."
                 );
             }
 
@@ -180,8 +181,9 @@ class GrafoService
             ->keyBy('id');
 
         // Calcular grado de entrada de cada nodo
-        $gradoEntrada = $scs->mapWithKeys(fn($sc) => [$sc->id => 0]);
-
+        $gradoEntrada = $scs
+            ->mapWithKeys(fn($sc) => [$sc->id => 0])
+            ->all();
         foreach ($scs as $sc) {
             foreach ($sc->prerequisitos as $pre) {
                 $gradoEntrada[$sc->id]++;
@@ -189,7 +191,10 @@ class GrafoService
         }
 
         // Cola inicial: SCs sin prerequisitos
-        $cola      = $gradoEntrada->filter(fn($grado) => $grado === 0)->keys()->toArray();
+        //$cola      = $gradoEntrada->filter(fn($grado) => $grado === 0)->keys()->toArray();
+        $cola = array_keys(
+            array_filter($gradoEntrada, fn($grado) => $grado === 0)
+        );
         $resultado = collect();
 
         while (!empty($cola)) {
@@ -208,7 +213,7 @@ class GrafoService
         if ($resultado->count() !== $scs->count()) {
             throw new \RuntimeException(
                 'El grafo de precedencia contiene ciclos. '
-                . 'Revisa la tabla sc_precedencia del ecosistema #' . $ecosistema->id
+                    . 'Revisa la tabla sc_precedencia del ecosistema #' . $ecosistema->id
             );
         }
 
