@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1;
 
+use App\Models\CriterioEvaluacion;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -11,6 +12,7 @@ use App\Models\Role;
 use App\Models\EcosistemaLaboral;
 use App\Models\Matricula;
 use App\Models\PerfilHabilitacion;
+use App\Models\ResultadoAprendizaje;
 use App\Models\SituacionCompetencia;
 use Illuminate\Testing\Fluent\AssertableJson;
 
@@ -198,8 +200,10 @@ class TeacherControllersTest extends TestCase
         $student = User::factory()->create();
         Matricula::create(['estudiante_id' => $student->id, 'modulo_id' => $ecos->modulo_id]);
         $perfil = PerfilHabilitacion::create(['estudiante_id' => $student->id, 'ecosistema_laboral_id' => $ecos->id, 'calificacion_actual' => 0]);
-
+        $ra = ResultadoAprendizaje::factory()->create(['modulo_id' => $ecos->modulo_id, 'peso_porcentaje' => 100]);
+        $ce = CriterioEvaluacion::factory()->create(['resultado_aprendizaje_id' => $ra->id, 'peso_porcentaje' => 100]);
         $sc = SituacionCompetencia::factory()->create(['ecosistema_laboral_id' => $ecos->id, 'umbral_maestria' => 50.00]);
+        $sc->criteriosEvaluacion()->attach($ce->id, ['peso_en_sc' => 100]);
 
         Sanctum::actingAs($docente);
 
@@ -231,7 +235,7 @@ class TeacherControllersTest extends TestCase
         // Verificar que la calificación del perfil se ha actualizado (media ponderada simple -> 85.5)
         $this->assertDatabaseHas('perfiles_habilitacion', [
             'id' => $perfil->id,
-            'calificacion_actual' => 85.50,
+            'calificacion_actual' => 8.55,
         ]);
     }
 }

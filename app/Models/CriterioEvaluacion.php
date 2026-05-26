@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class CriterioEvaluacion extends Model
 {
+    use HasFactory;
     protected $fillable = [
-        'resultado_aprendizaje_id', 'codigo', 'descripcion',
+        'resultado_aprendizaje_id', 'codigo', 'descripcion', 'peso_porcentaje'
     ];
     protected $table = 'criterios_evaluacion';
 

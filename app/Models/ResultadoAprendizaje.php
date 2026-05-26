@@ -11,7 +11,7 @@ class ResultadoAprendizaje extends Model
 {
     use HasFactory;
      protected $fillable = [
-        'modulo_id', 'codigo', 'descripcion',
+        'modulo_id', 'codigo', 'descripcion','peso_porcentaje'
     ];
     protected $table = 'resultados_aprendizaje';
 

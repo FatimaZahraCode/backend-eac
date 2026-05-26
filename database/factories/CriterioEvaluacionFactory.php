@@ -20,8 +20,10 @@ class CriterioEvaluacionFactory extends Factory
     {
         return [
             'resultado_aprendizaje_id' => ResultadoAprendizaje::factory(),
-            'codigo' => $this->faker->bothify('CE#'),
+            'codigo' =>'CE' . $this->faker->unique()->bothify('#?'), // Genera códigos como "CE1A", "CE2B", etc.
             'descripcion' => $this->faker->sentence(),
+            'peso_porcentaje'          => $this->faker->randomElement([20, 25, 30, 50]),
+            //'orden'                    => $this->faker->numberBetween(1, 10),
             'created_at' => now(),
             'updated_at' => now(),
         ];
