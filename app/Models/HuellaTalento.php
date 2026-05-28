@@ -28,6 +28,6 @@ class HuellaTalento extends Model
 
     public function ecosistemaLaboral(): BelongsTo
     {
-        return $this->belongsTo(EcosistemaLaboral::class);
+        return $this->belongsTo(EcosistemaLaboral::class, 'ecosistema_laboral_id', 'id');
     }
 }

@@ -17,7 +17,7 @@ class CriterioEvaluacion extends Model
 
     public function resultadoAprendizaje(): BelongsTo
     {
-        return $this->belongsTo(ResultadoAprendizaje::class);
+        return $this->belongsTo(ResultadoAprendizaje::class, 'resultado_aprendizaje_id', 'id');
     }
 
     // Un CE puede ser cubierto por varias SCs

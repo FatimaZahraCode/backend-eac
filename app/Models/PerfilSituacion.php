@@ -25,8 +25,4 @@ class PerfilSituacion extends Model
         'fecha_conquista' => 'datetime',
     ];
 
-    public function perfilHabilitacion()
-    {
-        return $this->belongsTo(PerfilHabilitacion::class, 'perfil_habilitacion_id', 'id');
-    }
 }

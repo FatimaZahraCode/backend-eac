@@ -21,21 +21,21 @@ class EcosistemaLaboral extends Model
 
     public function modulo(): BelongsTo
     {
-        return $this->belongsTo(Modulo::class);
+        return $this->belongsTo(Modulo::class, 'modulo_id', 'id');
     }
 
     public function situacionesCompetencia(): HasMany
     {
-        return $this->hasMany(SituacionCompetencia::class);
+        return $this->hasMany(SituacionCompetencia::class, 'ecosistema_laboral_id', 'id');
     }
 
     public function matriculas(): HasMany
     {
-        return $this->hasMany(Matricula::class);
+        return $this->hasMany(Matricula::class, 'ecosistema_laboral_id', 'id');
     }
 
     public function perfilesHabilitacion(): HasMany
     {
-        return $this->hasMany(PerfilHabilitacion::class);
+        return $this->hasMany(PerfilHabilitacion::class, 'ecosistema_laboral_id', 'id');
     }
 }

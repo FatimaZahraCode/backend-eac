@@ -17,20 +17,20 @@ class Modulo extends Model
 
     public function cicloFormativo(): BelongsTo
     {
-        return $this->belongsTo(CicloFormativo::class);
+        return $this->belongsTo(CicloFormativo::class, 'ciclo_formativo_id', 'id');
     }
 
     public function ecosistemasLaborales(): HasMany
     {
-        return $this->hasMany(EcosistemaLaboral::class);
+        return $this->hasMany(EcosistemaLaboral::class, 'modulo_id', 'id');
     }
 
     public function resultadosAprendizaje(): HasMany
     {
-        return $this->hasMany(ResultadoAprendizaje::class);
+        return $this->hasMany(ResultadoAprendizaje::class, 'modulo_id', 'id');
     }
     public function matriculas(): HasMany
     {
-        return $this->hasMany(Matricula::class);
+        return $this->hasMany(Matricula::class, 'modulo_id', 'id');
     }
 }
