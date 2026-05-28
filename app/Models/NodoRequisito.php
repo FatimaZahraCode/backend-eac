@@ -14,6 +14,6 @@ class NodoRequisito extends Model
 
     public function situacionCompetencia(): BelongsTo
     {
-        return $this->belongsTo(SituacionCompetencia::class);
+        return $this->belongsTo(SituacionCompetencia::class, 'situacion_competencia_id', 'id');
     }
 }

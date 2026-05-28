@@ -20,8 +20,10 @@ class ResultadoAprendizajeFactory extends Factory
     {
         return [
             'modulo_id' => Modulo::factory(),
-            'codigo' => $this->faker->bothify('RA#'), // Genera códigos como "RA1", "RA2", etc.
+            'codigo' => 'RA' . $this->faker->unique()->numberBetween(1, 99), // Genera códigos como "RA1", "RA2", etc.
             'descripcion' => $this->faker->sentence(),
+            'peso_porcentaje' => $this->faker->randomElement([25, 30, 35, 40]),
+            //'orden'           => $this->faker->numberBetween(1, 10),
             'created_at' => now(),
             'updated_at' => now(),
         ];

@@ -11,7 +11,7 @@ class ResultadoAprendizaje extends Model
 {
     use HasFactory;
      protected $fillable = [
-        'modulo_id', 'codigo', 'descripcion',
+        'modulo_id', 'codigo', 'descripcion','peso_porcentaje'
     ];
     protected $table = 'resultados_aprendizaje';
 
@@ -22,6 +22,6 @@ class ResultadoAprendizaje extends Model
 
     public function criteriosEvaluacion(): HasMany
     {
-        return $this->hasMany(CriterioEvaluacion::class);
+        return $this->hasMany(CriterioEvaluacion::class, 'resultado_aprendizaje_id', 'id');
     }
 }

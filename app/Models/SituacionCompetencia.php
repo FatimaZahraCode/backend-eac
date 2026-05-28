@@ -22,12 +22,12 @@ class SituacionCompetencia extends Model
     // Relación con EcosistemaLaboral
     public function ecosistemaLaboral():BelongsTo
     {
-        return $this->belongsTo(EcosistemaLaboral::class);
+        return $this->belongsTo(EcosistemaLaboral::class, 'ecosistema_laboral_id', 'id');
     }
     //Relacion con nodosRequisito
     public function nodosRequisito():HasMany
     {
-        return $this->hasMany(NodoRequisito::class);
+        return $this->hasMany(NodoRequisito::class, 'situacion_competencia_id', 'id');
     }
     //Relación de prerequisitos (belongsToMany a sí mismo)
     public function prerequisitos()
@@ -47,7 +47,13 @@ class SituacionCompetencia extends Model
     //Relación con PerfilesHabilitacion a través de PerfilSituacion (belongsToMany)
     public function perfilesHabilitacion()
     {
-        return $this->hasMany(PerfilSituacion::class, 'situacion_competencia_id');
+        return $this->belongsToMany(PerfilHabilitacion::class, 'perfil_situacion','situacion_competencia_id', 'perfil_habilitacion_id')->withPivot([
+            'gradiente_autonomia',
+            'puntuacion_conquista',
+            'intentos',
+            'fecha_conquista',
+        ]);
+       //return $this->hasMany(PerfilSituacion::class, 'situacion_competencia_id');
     }
 
 

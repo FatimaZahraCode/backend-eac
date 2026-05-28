@@ -7,13 +7,17 @@ use Illuminate\Http\Request;
 use App\Models\EcosistemaLaboral;
 use App\Models\PerfilHabilitacion;
 use App\Models\SituacionCompetencia;
+use App\Services\CalificacionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class ConquistaController extends Controller
 {
-     /**
+    public function __construct(
+        private readonly CalificacionService $calificacionService,
+    ) {}
+    /**
      * POST /api/v1/docente/ecosistemas/{ecosistema}/conquistas
      *
      * Body:
@@ -31,7 +35,7 @@ class ConquistaController extends Controller
         $data = $request->validate([
             'estudiante_id'       => ['required', 'integer', 'exists:users,id'],
             'sc_codigo'           => ['required', 'string'],
-            'gradiente_autonomia' => ['required', Rule::in(['asistido','guiado','supervisado','autonomo'])],
+            'gradiente_autonomia' => ['required', Rule::in(['asistido', 'guiado', 'supervisado', 'autonomo'])],
             'puntuacion_conquista' => ['required', 'numeric', 'min:0', 'max:100'],
         ]);
 
@@ -47,7 +51,7 @@ class ConquistaController extends Controller
                 'title'  => 'Umbral de maestría no alcanzado',
                 'status' => 422,
                 'detail' => "La puntuación {$data['puntuacion_conquista']} no supera el umbral "
-                          . "de maestría de la SC {$sc->codigo} ({$sc->umbral_maestria}%).",
+                    . "de maestría de la SC {$sc->codigo} ({$sc->umbral_maestria}%).",
             ], 422);
         }
 
@@ -66,7 +70,6 @@ class ConquistaController extends Controller
             $yaConquistada = $perfil->situacionesConquistadas()
                 ->where('situacion_competencia_id', $sc->id)
                 ->exists();
-
             if ($yaConquistada) {
                 // Actualizar el gradiente si mejora
                 $perfil->situacionesConquistadas()->updateExistingPivot($sc->id, [
@@ -83,13 +86,19 @@ class ConquistaController extends Controller
                     'fecha_conquista'      => now(),
                 ]);
             }
-
             // Recalcular calificación actual del perfil
             // (lógica completa en Unidad 7; aquí usamos media ponderada simple)
-            $nuevaCalificacion = $perfil->situacionesConquistadas()
+            /* $nuevaCalificacion = $perfil->situacionesConquistadas()
                 ->avg('perfil_situacion.puntuacion_conquista');
 
-            $perfil->update(['calificacion_actual' => round($nuevaCalificacion, 2)]);
+            $perfil->update(['calificacion_actual' => round($nuevaCalificacion, 2)]); */
+            /* $nuevaCalificacion = $this->calificacionService
+                ->calcular($perfil);
+            $perfil->update([
+                'calificacion_actual' => $nuevaCalificacion
+            ]); */
+
+            $this->calificacionService->calcularYPersistir($perfil->fresh());
         });
 
         return response()->json([
@@ -109,7 +118,7 @@ class ConquistaController extends Controller
 
     private function autorizarDocente(EcosistemaLaboral $ecosistema): void
     {
-       
+
         $esDocente = auth()->user()
             ->userRoles()
             ->wherePivot('ecosistema_laboral_id', $ecosistema->id)

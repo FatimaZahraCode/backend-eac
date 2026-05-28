@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class PerfilHabilitacion extends Model
 {
+    use HasFactory;
     protected $fillable = [
-        'estudiante_id', 'ecosistema_laboral_id', 'calificacion_actual',
+         'estudiante_id', 'ecosistema_laboral_id', 'calificacion_actual',
     ];
     protected $table = 'perfiles_habilitacion';
 
@@ -17,12 +19,12 @@ class PerfilHabilitacion extends Model
 
     public function estudiante(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'estudiante_id');
+        return $this->belongsTo(User::class, 'estudiante_id', 'id');
     }
 
     public function ecosistemaLaboral(): BelongsTo
     {
-        return $this->belongsTo(EcosistemaLaboral::class);
+        return $this->belongsTo(EcosistemaLaboral::class, 'ecosistema_laboral_id', 'id');
     }
 
     // SCs conquistadas por este estudiante en este ecosistema

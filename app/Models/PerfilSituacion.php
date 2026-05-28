@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PerfilSituacion extends Model
 {
+    use HasFactory;
     protected $table = 'perfil_situacion';
 
     protected $fillable = [
@@ -23,8 +25,4 @@ class PerfilSituacion extends Model
         'fecha_conquista' => 'datetime',
     ];
 
-    public function perfilHabilitacion()
-    {
-        return $this->belongsTo(PerfilHabilitacion::class);
-    }
 }
